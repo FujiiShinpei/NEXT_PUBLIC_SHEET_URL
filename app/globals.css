@@ -35,105 +35,69 @@ body {
   font-weight: 800;
 }
 
+
+/* Update container padding for mobile */
 .container {
   max-width: 600px;
   margin: 0 auto;
-  padding: 20px;
+  padding: 8px;
+  /* Reduced from 20px */
 }
 
-/* Card List / Table Container */
-.card-list {
-  display: flex;
-  flex-direction: column;
-  background: white;
-  border-radius: 12px;
-  box-shadow: var(--card-shadow);
-  overflow: hidden;
-  border: 1px solid #e2e8f0;
-}
-
-/* Header Row */
-.ranking-header {
-  display: flex;
-  align-items: center;
-  /* Ensure vertical center */
-  background-color: #f8fafc;
-  padding: 12px 16px;
-  border-bottom: 2px solid #e2e8f0;
-  /* Thicker bottom border for separation */
-  color: #64748b;
-  /* Darker than before for better readability */
-  font-size: 0.8rem;
-  /* Slightly larger */
-  font-weight: 700;
-  /* text-transform: uppercase; Removed for cleaner look, or keep? User asked to fix it. Let's keep it but readable. */
-  letter-spacing: 0.02em;
-}
-
-/* Data Row */
-.ranking-row {
-  display: flex;
-  align-items: center;
-  padding: 12px 16px;
-  border-bottom: 1px solid #f1f5f9;
-  transition: background-color 0.2s;
-}
-
-.ranking-row:last-child {
-  border-bottom: none;
-}
-
-.ranking-row:hover {
-  background-color: #f8fafc;
-}
-
-/* Columns */
+/* Columns - Optimized for Mobile */
 .col-rank {
-  width: 60px;
-  /* Slightly wider */
+  width: 42px;
+  /* Reduced from 60px */
   text-align: center;
   flex-shrink: 0;
   display: flex;
   flex-direction: row;
-  /* Side by side */
   align-items: center;
   justify-content: center;
-  gap: 4px;
+  gap: 2px;
   font-family: 'Outfit', sans-serif;
   font-weight: 700;
   color: #64748b;
   line-height: 1.1;
+  font-size: 0.9rem;
+  /* Slightly smaller font */
 }
 
 .col-name {
   flex-grow: 1;
-  padding: 0 16px;
+  padding: 0 8px;
+  /* Reduced padding */
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
   font-weight: 500;
+  min-width: 80px;
+  /* Ensure at least 4-5 chars visible */
 }
 
 .col-points {
-  width: 90px;
+  width: 65px;
+  /* Reduced from 90px */
   text-align: right;
   flex-shrink: 0;
 }
 
 .col-monthly {
-  width: 70px;
+  width: 45px;
+  /* Reduced from 70px */
   text-align: right;
   flex-shrink: 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #64748b;
   display: block;
 }
 
 .col-today {
-  width: 60px;
+  width: 45px;
+  /* Reduced from 60px */
   text-align: right;
   flex-shrink: 0;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: #64748b;
   display: block;
 }
@@ -171,9 +135,9 @@ body {
 }
 
 .point-unit {
-  font-size: 0.75rem;
+  font-size: 0.6rem;
   color: #94a3b8;
-  margin-left: 4px;
+  margin-left: 2px;
 }
 
 /* Rank Coloring */
