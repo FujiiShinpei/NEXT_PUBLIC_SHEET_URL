@@ -4,39 +4,24 @@ import { useState, useEffect } from 'react';
 import RankingCard from './RankingCard';
 import { fetchRankings } from '../lib/sheets';
 
-// Mock data for initial dev or fallback
-const MOCK_DATA = [
-    { id: 1, name: 'Sample Player 1', rank: 1, displayRank: 1, points: 150 },
-    { id: 2, name: 'Sample Player 2', rank: 2, displayRank: 2, points: 120 },
-    { id: 3, name: 'Sample Player 3', rank: 3, displayRank: 3, points: 100 },
-];
-
 export default function RankingList() {
     const [rankings, setRankings] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState(null);
+    const [sortMode, setSortMode] = useState('total'); // 'total' | 'monthly'
 
     useEffect(() => {
         async function loadData() {
             try {
-                // TODO: Replace with actual published CSV URL
-                // For now, we simulate a delay or use mock data if no URL provided
                 const csvUrl = process.env.NEXT_PUBLIC_SHEET_URL;
-
                 let data = [];
                 if (csvUrl) {
                     data = await fetchRankings(csvUrl);
-                } else {
-                    console.log("No Sheet URL found, using mock data for demo.");
-                    // Simulate network delay
-                    await new Promise(r => setTimeout(r, 800));
-                    data = MOCK_DATA;
                 }
-
                 setRankings(data);
             } catch (err) {
                 console.error(err);
-                setError('Failed to load rankings.');
+                setError('ランキングの読み込みに失敗しました');
             } finally {
                 setLoading(false);
             }
@@ -44,23 +29,60 @@ export default function RankingList() {
         loadData();
     }, []);
 
-    if (loading) {
-        return <div className="loading">Loading rankings...</div>;
-    }
+    if (loading) return <div className="loading">読み込み中...</div>;
+    if (error) return <div className="error-msg">{error}</div>;
+    if (rankings.length === 0) return <div className="empty-msg">データが見つかりませんでした</div>;
 
-    if (error) {
-        return <div className="text-red-400 text-center p-4">{error}</div>;
-    }
+    // Sort and prep data
+    const sortedData = [...rankings].sort((a, b) => {
+        if (sortMode === 'monthly') {
+            // Sort by Monthly Points (Column W) descending
+            return b.monthlyPoints - a.monthlyPoints;
+        }
+        // Default: Sort by Annual Rank
+        return a.rank - b.rank;
+    });
 
-    if (rankings.length === 0) {
-        return <div className="text-center text-slate-400 p-8">No data found in spreadsheet.</div>;
-    }
+    // Re-assign display rank for the view if needed
+    const displayData = sortedData.map((p, i) => ({
+        ...p,
+        // If sorting by monthly, show quantitative rank based on month
+        displayRank: sortMode === 'monthly' ? i + 1 : p.displayRank,
+    }));
 
     return (
-        <div className="card-list">
-            {rankings.map((player) => (
-                <RankingCard key={player.id} player={player} />
-            ))}
+        <div className="w-full">
+            {/* Sort Toggles */}
+            {/* Sort Toggles - Casual Style */}
+            <div className="sort-controls">
+                <button
+                    className={`btn-toggle ${sortMode === 'total' ? 'btn-toggle-active' : 'btn-toggle-inactive'}`}
+                    onClick={() => setSortMode('total')}
+                >
+                    年間
+                </button>
+                <button
+                    className={`btn-toggle ${sortMode === 'monthly' ? 'btn-toggle-active' : 'btn-toggle-inactive'}`}
+                    onClick={() => setSortMode('monthly')}
+                >
+                    今月
+                </button>
+            </div>
+
+            <div className="card-list">
+                {/* Table Header */}
+                <div className="ranking-header">
+                    <div className="col-rank">#</div>
+                    <div className="col-name">名前</div>
+                    <div className="col-monthly">今月</div>
+                    <div className="col-today">加算点</div>
+                    <div className="col-points">年間</div>
+                </div>
+
+                {displayData.map((player) => (
+                    <RankingCard key={player.id} player={player} />
+                ))}
+            </div>
         </div>
     );
 }
